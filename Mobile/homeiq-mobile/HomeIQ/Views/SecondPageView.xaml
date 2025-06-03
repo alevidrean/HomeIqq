@@ -1,0 +1,48 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeIQ.Views.SecondPageView"
+             x:Name="SecondPageRoot"
+             xmlns:viewModels="clr-namespace:HomeIQ.ViewModels"
+             BackgroundColor="White"
+             Title="Second Page">
+    <Grid>
+        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
+            <CollectionView ItemsSource="{Binding Programs}" SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                      ItemSpacing="50"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="20" Margin="15,0,15,0" CornerRadius="15" BackgroundColor="#f2f2f2">
+                            <Grid>
+                                <Label Text="{Binding Name}" 
+                                       FontSize="18" 
+                                       TextColor="Black"
+                                       HorizontalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                    Command="{Binding Source={x:Reference SecondPageRoot}, Path=BindingContext.ShowProgramDetailsCommand}"
+                                    CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+        <!-- Navigation bar -->
+        <HorizontalStackLayout
+            Spacing="10"
+            Padding="20"
+            VerticalOptions="End"
+            HorizontalOptions="Start">
+            <Button Text="Main Page"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="MainPageView"/>
+            <Button Text="Second Page"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="SecondPageView"/>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,225 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:HomeIQ.ViewModels"
+             x:Class="HomeIQ.Views.MainPageView"
+             BackgroundColor="White"
+             Title="Home">
+
+
+    <!-- Update RowDefinitions: Header, Temperatures, Main Content -->
+    <Grid RowDefinitions="Auto,Auto,*" Padding="20" BackgroundColor="#e0e0e0">
+
+        <!-- HEADER -->
+        <Grid ColumnDefinitions="Auto, *" Margin="0,0,0,20" Grid.Row="0">
+            <Label Text="{Binding Username}"
+                   FontSize="26"
+                   FontFamily="OpenSansSemibold"
+                   TextColor="Black"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start"
+                   Grid.Column="0"/>
+            <Label x:Name="ClockLabel"
+                   FontFamily="Font"
+                   Text="{Binding CurrentTime}" 
+                   TextColor="Black"
+                   FontSize="26"
+                   VerticalOptions="Center"
+                   HorizontalOptions="End"
+                   Margin="10,0"
+                   Grid.Column="1"/>
+        </Grid>
+
+        <!-- TEMPERATURES ROW -->
+        <Grid Grid.Row="1"
+      ColumnDefinitions="*,*"
+      Margin="0,0,0,20"
+      HorizontalOptions="Fill"
+      VerticalOptions="Center"
+      RowSpacing="0"
+      ColumnSpacing="20">
+
+            <!-- Camera 1 -->
+            <Frame CornerRadius="30"
+       BackgroundColor="#f2f2f2"
+       Padding="0"
+       HasShadow="True"
+       HeightRequest="140"
+       VerticalOptions="Center"
+       HorizontalOptions="FillAndExpand">
+                <VerticalStackLayout Spacing="6" Padding="20,10" HorizontalOptions="FillAndExpand">
+                    <Label Text="Camera 1"
+               FontSize="18"
+               FontAttributes="Bold"
+               TextColor="#1976D2"
+               HorizontalOptions="Center"/>
+                    <Label Text="{Binding LivingRoomTemperatureText}"
+               FontSize="36"
+               FontAttributes="Bold"
+               TextColor="#1976D2"
+               HorizontalOptions="Center"/>
+                    <HorizontalStackLayout HorizontalOptions="Center">
+                        <Label Text="Umiditate:"
+                   FontSize="15"
+                   FontAttributes="Bold"
+                   TextColor="#1976D2"
+                   VerticalOptions="Center"/>
+                        <Label Text="{Binding LivingRoomHumidityText}"
+                   FontSize="21"
+                   TextColor="#1976D2"
+                   VerticalOptions="Center"
+                   Margin="5,0,0,0"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Camera 2 -->
+            <Frame CornerRadius="30"
+       BackgroundColor="#f2f2f2"
+       Padding="0"
+       HasShadow="True"
+       HeightRequest="140"
+       VerticalOptions="Center"
+       HorizontalOptions="FillAndExpand"
+       Grid.Column="1">
+                <VerticalStackLayout Spacing="6" Padding="20,10" HorizontalOptions="FillAndExpand">
+                    <Label Text="Camera 2"
+               FontSize="18"
+               FontAttributes="Bold"
+               TextColor="#C62828"
+               HorizontalOptions="Center"/>
+                    <Label Text="{Binding BedroomTemperatureText}"
+               FontSize="36"
+               FontAttributes="Bold"
+               TextColor="#C62828"
+               HorizontalOptions="Center"/>
+                    <HorizontalStackLayout HorizontalOptions="Center">
+                        <Label Text="Umiditate:"
+                   FontSize="15"
+                   FontAttributes="Bold"
+                   TextColor="#C62828"
+                   VerticalOptions="Center"/>
+                        <Label Text="{Binding BedroomHumidityText}"
+                   FontSize="22"
+                   TextColor="#C62828"
+                   VerticalOptions="Center"
+                   Margin="5,0,0,0"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+        
+        <!-- MAIN CONTENT -->
+        <!-- MAIN CONTENT -->
+        <ScrollView Grid.Row="2"
+            VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="20">
+
+                <!-- CLIMATE CONTROL -->
+                <Frame Padding="10"
+       CornerRadius="15"
+       BackgroundColor="#f2f2f2"
+       Margin="0,0,5,0"
+       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Setează temperatura"
+               FontSize="18"
+               FontAttributes="Bold"
+               TextColor="Black"
+               HorizontalOptions="Center"/>
+                        <Slider Minimum="18"
+                            Maximum="30"
+                            Value="{Binding Temperature, Mode=TwoWay}"
+                            MinimumTrackColor="Blue"
+                            MaximumTrackColor="Red"
+                            WidthRequest="150"
+                            ScaleY="2"
+                            ScaleX="2"
+                            ThumbColor="Black"
+                            HorizontalOptions="Center"/>
+                        <Label Text="{Binding TemperatureLabel}"
+               FontSize="20"
+               TextColor="Black"
+               HorizontalOptions="Center"/>
+                        <Button Text="Setează"
+                Command="{Binding SetTemperatureCommand}"
+                BackgroundColor="#2196F3"
+                TextColor="White"
+                FontSize="16"
+                CornerRadius="10"
+                WidthRequest="120"
+                HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+
+                <!-- LIGHTS CONTROL -->
+                <Frame Padding="10"
+               CornerRadius="15"
+               Margin="0,0,5,0"
+               BackgroundColor="#f2f2f2"
+               HasShadow="True">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <ImageButton Source="{Binding LightsIcon}"
+                         Command="{Binding ToggleLightsCommand}"
+                         WidthRequest="50"
+                         HeightRequest="50"
+                         BackgroundColor="Transparent" />   
+
+                        <Label Text="{Binding LightsStatusText}"
+                       TextColor="Black"
+                       Grid.Column="1"
+                       FontSize="16"
+                       VerticalOptions="Center"
+                       Margin="10,0,0,0" />
+                    </Grid>
+                </Frame>
+
+                <Frame CornerRadius="15"
+               BackgroundColor="#f2f2f2"
+               Padding="20"
+               HeightRequest="150"
+               Margin="0,0,5,0"
+               HasShadow="True">
+
+                    <VerticalStackLayout Spacing="15"
+                                 HorizontalOptions="Center">
+
+                        <!-- Stare usa -->
+                        <Label Text="{Binding DoorStatusMessage}"
+                       FontSize="18"
+                       TextColor="{Binding DoorStatusColor}"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+
+                        <!-- Buton intrare/ieșire -->
+                        <Button Text="{Binding AccessButtonText}"
+                        Command="{Binding DoorAccessCommand}"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        FontSize="16"
+                        CornerRadius="10"
+                        WidthRequest="250"
+                        HeightRequest="50" />
+
+                        
+
+                    </VerticalStackLayout>
+                </Frame>
+            <HorizontalStackLayout
+                Spacing="10"
+                VerticalOptions="End"
+                HorizontalOptions="Start">
+                <Button Text="Main Page"
+                     Command="{Binding NavigateCommand}"
+                     CommandParameter="MainPageView"/>
+                <Button Text="Second Page"
+                     Command="{Binding NavigateCommand}"
+                     CommandParameter="SecondPageView"/>
+                <Button Text="Connect to ESP32"
+                    Command="{Binding ConnectToEspCommand}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        
+    </Grid>
+</ContentPage>

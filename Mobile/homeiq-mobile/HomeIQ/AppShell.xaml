@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="HomeIQ.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:HomeIQ"
+    xmlns:views="clr-namespace:HomeIQ.Views"
+    Shell.FlyoutBehavior="Flyout"   
+    Shell.NavBarIsVisible="False"
+    Title="HomeIQ">
+    
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate views:LoginPageView}"
+        Route="LoginPageView" />
+    
+    <ShellContent 
+        Title="Main Page"
+        ContentTemplate="{DataTemplate views:MainPageView}" 
+        Route="MainPageView"  />
+    
+    <ShellContent
+        Title="Second Page"
+        ContentTemplate="{DataTemplate views:SecondPageView}"
+        Route="SecondPageView" />
+    
+
+</Shell>

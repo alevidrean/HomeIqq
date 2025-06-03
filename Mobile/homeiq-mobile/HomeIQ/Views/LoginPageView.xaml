@@ -1,0 +1,44 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:HomeIQ.ViewModels;assembly=HomeIQ"
+             x:Class="HomeIQ.Views.LoginPageView"
+             BackgroundColor="White"
+             Title="Login">
+
+    
+
+    <VerticalStackLayout Padding="30" Spacing="20">
+        <Label Text="Welcome" FontSize="32" HorizontalOptions="Center" Margin="0,100,0,0"/>
+
+        <Entry Placeholder="Username"
+               Text="{Binding Username}"
+               TextColor="Black"
+               FontFamily="OpenSansSemibold"
+               PlaceholderColor="Black"
+               Keyboard="Default"
+               ReturnType="Next" />
+
+        <Entry Placeholder="Password"
+               Text="{Binding Password}"
+               TextColor="Black"
+               FontFamily="OpenSansSemibold"
+               PlaceholderColor="Black"
+               IsPassword="True"
+               ReturnType="Go" />
+
+        <Button Text="Login"
+                Command="{Binding LoginCommand}"
+                BackgroundColor="#1976D2"
+                TextColor="White"
+                CornerRadius="10"
+                FontSize="18" />
+
+        <Label Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               FontSize="18"
+               FontAttributes="Bold"
+               HorizontalTextAlignment="Center"
+               Margin="0,75,0,0"
+               IsVisible="{Binding HasError}" />
+    </VerticalStackLayout>
+</ContentPage>
