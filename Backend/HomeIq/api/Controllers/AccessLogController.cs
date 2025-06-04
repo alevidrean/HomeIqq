@@ -29,10 +29,7 @@ namespace api.Controllers
         [Authorize]
         public async Task<IActionResult> AddLogFromDto([FromBody] AccessLogDto dto)
         {
-            // Dacă primești CodBluetooth de la ESP32:
-            // var user = await _context.Users.FirstOrDefaultAsync(u => u.CodBluetooth == dto.CodBluetooth);
-            // if (user == null) return NotFound("User not found");
-            // var userId = user.Id;
+
 
             // Dacă acțiunea vine de la frontend cu user logat:
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -42,7 +39,7 @@ namespace api.Controllers
             var log = new AccessLog
             {
                 UserId = userId,
-                Direction = dto.Direction,
+                LockState = dto.LockState,
                 Timestamp = DateTime.UtcNow
             };
             _context.AccessLog.Add(log);

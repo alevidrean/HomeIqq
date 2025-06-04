@@ -9,9 +9,10 @@ namespace api.Service
 {
     public class WebSocketHandler
     {
-        public static ConcurrentBag<WebSocket> Clients { get; } = new ConcurrentBag<WebSocket>();
+
         public static SmartHomePayload? LatestPayload { get; set; }
 
+        public static ConcurrentBag<WebSocket> Clients { get; } = new ConcurrentBag<WebSocket>();
         public static async Task BroadcastMessageAsync(string message)
         {
             var buffer = System.Text.Encoding.UTF8.GetBytes(message);

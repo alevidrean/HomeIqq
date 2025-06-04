@@ -39,8 +39,6 @@ namespace api.Controllers
                         if (payload != null)
                         {
                             WebSocketHandler.LatestPayload = payload;
-                            //  Console.WriteLine($"Temperatura camera1: {payload.Camera1.Temperature} °C");
-                            //  Console.WriteLine($"Temperatura camera2: {payload.Camera2.Temperature} °C");
 
                         }
                     }

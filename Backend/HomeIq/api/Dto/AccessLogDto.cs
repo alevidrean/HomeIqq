@@ -8,7 +8,7 @@ namespace api.Dto
     public class AccessLogDto
     {
 
-        public string UserId;
-        public string Direction;
+        //  public string UserId { get; set; }
+        public string LockState { get; set; }
     }
 }

@@ -5,6 +5,7 @@ import DashboardUser from "./pages/DashboardUser";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/Home";
 import CreateUser from "./pages/CreateUser";
+import TemperatureProgramsPage from "./pages/TemperatureProgramsPage"; // adaugă acest import
 
 function App() {
   return (
@@ -36,7 +37,25 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/temperature-programs"
+          element={
+            <ProtectedRoute role="Admin">
+              <TemperatureProgramsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+  path="/user/temperature-programs"
+  element={
+    <ProtectedRoute role="User">
+      <TemperatureProgramsPage />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
+
+
     </BrowserRouter>
   );
 }

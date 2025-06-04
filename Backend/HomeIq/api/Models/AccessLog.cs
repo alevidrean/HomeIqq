@@ -10,6 +10,6 @@ namespace api.Models
         public int Id { get; set; }
         public string UserId { get; set; }  // FK către AspNetUsers(Id)
         public DateTime Timestamp { get; set; }
-        public string Direction { get; set; }  // "In" sau "Out"
+        public string LockState { get; set; }  // "In" sau "Out"
     }
 }

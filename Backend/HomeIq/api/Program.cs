@@ -104,6 +104,7 @@ builder.Services.AddAuthorization();
 // ---------- DEPENDENCY INJECTION ----------
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITemperatureProgramService, TemperatureProgramService>();
+builder.Services.AddHostedService<TemperatureBackgroundService>();
 
 
 
@@ -130,18 +131,18 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Creează un admin dacă nu există
-    string adminEmail = "admin@home.local";
+    string adminEmail = "admin3@home.local";
     var admin = await userManager.FindByEmailAsync(adminEmail);
     if (admin == null)
     {
         var newAdmin = new AppUser
         {
-            UserName = "admin",
+            UserName = "admin3",
             Email = adminEmail,
             Nume = "Administrator",
             Prenume = "Principal",
-            CNP = "0000000000000",
-            CodBluetooth = "ADMINCODE123"
+            CNP = "00000000340003",
+            CodBluetooth = "ADMINCODE1233"
         };
 
         var result = await userManager.CreateAsync(newAdmin, "Admin123!");

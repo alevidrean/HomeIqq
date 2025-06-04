@@ -20,7 +20,7 @@ namespace api.Controllers
         {
             // Doar trimitem mesajul prin WebSocket către clienți
             await WebSocketHandler.BroadcastMessageAsync("unlock");
-            return Ok(new { message = "Lumina aprinsă" });
+            return Ok(new { message = "unlock" });
         }
     }
 }
