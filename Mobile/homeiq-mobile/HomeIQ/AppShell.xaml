@@ -7,22 +7,25 @@
     xmlns:views="clr-namespace:HomeIQ.Views"
     Shell.FlyoutBehavior="Flyout"   
     Shell.NavBarIsVisible="False"
-    Title="HomeIQ">
+    Title="HomeIQ"> 
     
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate views:LoginPageView}"
         Route="LoginPageView" />
-    
-    <ShellContent 
+      <ShellContent 
         Title="Main Page"
         ContentTemplate="{DataTemplate views:MainPageView}" 
         Route="MainPageView"  />
-    
+   
     <ShellContent
         Title="Second Page"
         ContentTemplate="{DataTemplate views:SecondPageView}"
         Route="SecondPageView" />
     
+    <ShellContent
+        Title="Logs"
+        ContentTemplate="{DataTemplate views:LogsView}"
+        Route="LogsView" />
 
 </Shell>

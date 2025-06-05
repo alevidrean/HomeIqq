@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeIQ.Views.LogsView"
+             x:Name="LogsRoot"
+             BackgroundColor="#e0e0e0"
+             Title="Logs">
+
+    <!-- Large blank grid for logs -->
+    <Grid>
+        <Label HorizontalOptions="Center"
+               VerticalOptions="StartAndExpand"
+               Padding="40"
+               Text="Logs"
+               TextColor="Black"
+               FontAttributes="Bold"
+               FontSize="34"/>
+        <Frame
+    BackgroundColor="#f2f2f2"
+    BorderColor="#cccccc"
+    CornerRadius="16"
+    HasShadow="True"
+    Padding="0"
+    Margin="0,20,0,0"
+    HeightRequest="500"
+    WidthRequest="300"
+    VerticalOptions="FillAndExpand"
+    HorizontalOptions="Center">
+            <VerticalStackLayout Padding="10" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                    <Label Text="{Binding AllLogsDetails}" 
+                   FontFamily="Consolas"
+                   FontSize="14"
+                   TextColor="Black"
+                   Margin="0,10,0,0"/>
+                </ScrollView>
+            </VerticalStackLayout>
+        </Frame>
+        <!-- Navigation bar -->
+    <HorizontalStackLayout
+        Padding="20"  Spacing="10" 
+        VerticalOptions="End"
+        HorizontalOptions="CenterAndExpand">
+            <Button Text="Home"
+                BackgroundColor="#aaaaaa"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="MainPageView"/>
+            <Button Text="Programs"
+                BackgroundColor="#aaaaaa"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="SecondPageView"/>
+            <Button Text="Logs"
+                BackgroundColor="#aaaaaa"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="LogsView"/>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

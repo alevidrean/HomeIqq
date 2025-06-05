@@ -10,5 +10,11 @@ namespace HomeIQ.Views
             InitializeComponent();
             BindingContext = viewModel;
         }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is ViewModels.SecondPageViewModel vm)
+                vm.LoadProgramsCommand.Execute(null);
+        }
     }
 }

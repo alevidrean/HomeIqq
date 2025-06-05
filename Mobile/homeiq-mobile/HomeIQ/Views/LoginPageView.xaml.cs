@@ -10,5 +10,6 @@ namespace HomeIQ.Views
             InitializeComponent();
             BindingContext = viewModel;
         }
+
     }
 }

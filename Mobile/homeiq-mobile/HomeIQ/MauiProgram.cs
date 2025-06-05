@@ -29,6 +29,9 @@ namespace HomeIQ
             builder.Services.AddTransient<SecondPageViewModel>();
             builder.Services.AddTransient<SecondPageView>();
 
+            builder.Services.AddTransient<LogsViewModel>();
+            builder.Services.AddTransient<LogsView>();
+
             builder.Services.AddSingleton<ApiService>();
 
 #if DEBUG

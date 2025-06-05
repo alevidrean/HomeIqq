@@ -37,26 +37,23 @@ namespace HomeIQ.ViewModels
         {
             HasError = false;
             ErrorMessage = string.Empty;
+            
+            var result = await _apiService.LoginAsync(Username, Password);
 
-            try
+            if (result != null)
             {
-                var result = await _apiService.LoginAsync(Username, Password);
-                if (result != null)
+                var user = await _apiService.LoginAsync(username, password);
+                if (user != null && !string.IsNullOrEmpty(user.Token))
                 {
-                    Debug.WriteLine("Login successful");
-                    await Shell.Current.GoToAsync($"//MainPageView?Username={Username}");
+                    _apiService.AuthToken = user.Token;
                 }
-                else
-                {
-                    Debug.WriteLine("Login failed");
-                    ErrorMessage = "Invalid username or password.";
-                    HasError = true;
-                }
+                Debug.WriteLine("Login successful");
+                await Shell.Current.GoToAsync($"//MainPageView?Username={Username}");
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine($"Login error: {ex.Message}");
-                ErrorMessage = "Cannot connect to server. Please try again later.";
+                Debug.WriteLine("Login failed");
+                ErrorMessage = "Invalid username or password.";
                 HasError = true;
             }
         }

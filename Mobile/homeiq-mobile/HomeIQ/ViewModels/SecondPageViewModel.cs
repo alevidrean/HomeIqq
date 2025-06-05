@@ -1,49 +1,120 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using HomeIQ.Services;
 using Microsoft.Maui.Controls;
+using System.Linq;
 
 namespace HomeIQ.ViewModels
 {
-    public class SecondPageViewModel
+    public class SecondPageViewModel : INotifyPropertyChanged
     {
-        public class ProgramModel
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly ApiService _apiService = new ApiService();
+
+        public ObservableCollection<TemperatureProgramDto> Programs { get; } = new();
+
+        private TemperatureProgramDto _selectedProgram;
+        public TemperatureProgramDto SelectedProgram
         {
-            public string Name { get; set; }
-            public List<IntervalModel> Intervals { get; set; }
+            get => _selectedProgram;
+            set
+            {
+                if (_selectedProgram != value)
+                {
+                    _selectedProgram = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
-        public class IntervalModel
+        private TemperatureProgramDto _popupProgram;
+        public TemperatureProgramDto PopupProgram
         {
-            public string TimeRange { get; set; }
-            public double Temperature { get; set; }
+            get => _popupProgram;
+            set
+            {
+                if (_popupProgram != value)
+                {
+                    _popupProgram = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsPopupVisible));
+                }
+            }
         }
+
+        public bool IsPopupVisible => PopupProgram != null;
+
+        public SecondPageViewModel()
+        {
+            LoadProgramsCommand = new Command(async () => await LoadProgramsAsync());
+            ShowProgramPopupCommand = new Command<TemperatureProgramDto>(program => PopupProgram = program);
+            HidePopupCommand = new Command(() => PopupProgram = null);
+            SelectPopupProgramCommand = new Command(async () => await SelectPopupProgramAsync());
+
+            MessagingCenter.Subscribe<MainPageViewModel>(this, "TemperatureSet", (sender) =>
+            {
+                SelectedProgram = null;
+            });
+
+            Device.StartTimer(TimeSpan.FromMinutes(1), () =>
+            {
+                // Only refresh if the popup is not open
+                if (!IsPopupVisible)
+                    MainThread.BeginInvokeOnMainThread(async () => await LoadProgramsAsync());
+                return true; // Return true to keep the timer running
+            });
+        }
+
+        public ICommand LoadProgramsCommand { get; }
+        public ICommand ShowProgramPopupCommand { get; }
+        public ICommand HidePopupCommand { get; }
+        public ICommand SelectPopupProgramCommand { get; }
+
+        private async Task LoadProgramsAsync()
+        {
+            var previousPopupId = PopupProgram?.Id;
+            Programs.Clear();
+            var programs = await _apiService.GetProgramsAsync();
+            foreach (var p in programs)
+                Programs.Add(p);
+
+            SelectedProgram = Programs.FirstOrDefault(p => p.IsActive);
+
+            // Re-assign PopupProgram to the refreshed instance if it still exists
+            if (previousPopupId != null)
+                PopupProgram = Programs.FirstOrDefault(p => p.Id == previousPopupId);
+        }
+
+        private async Task SelectPopupProgramAsync()
+        {
+            if (PopupProgram != null && !PopupProgram.IsActive)
+            {
+                await _apiService.ActivateProgramAsync(PopupProgram.Name);
+                await LoadProgramsAsync();
+            }
+            PopupProgram = null;
+        }
+
+        public ICommand SelectProgramDirectCommand => new Command<TemperatureProgramDto>(async (program) =>
+        {
+            if (program != null && !program.IsActive)
+            {
+                await _apiService.ActivateProgramAsync(program.Name);
+                await LoadProgramsAsync();
+            }
+        });
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
         public ICommand NavigateCommand => new Command<string>(async (route) =>
         {
             if (!string.IsNullOrEmpty(route))
                 await Shell.Current.GoToAsync($"//{route}", true);
-        });
-
-        public ObservableCollection<ProgramModel> Programs { get; } = new()
-    {
-        new ProgramModel { Name = "Program Week-end", Intervals = new List<IntervalModel> {
-            new IntervalModel { TimeRange = "08:00-10:00", Temperature = 21 },
-            new IntervalModel { TimeRange = "10:00-12:00", Temperature = 22 }
-        }},
-        new ProgramModel { Name = "Program Week-day", Intervals = new List<IntervalModel> {
-            new IntervalModel { TimeRange = "09:00-11:00", Temperature = 20 }
-        }},
-        new ProgramModel { Name = "Program Concediu", Intervals = new List<IntervalModel> {
-            new IntervalModel { TimeRange = "07:00-09:00", Temperature = 19 }
-        }},
-    };
-
-        public ICommand ShowProgramDetailsCommand => new Command<ProgramModel>(async (program) =>
-        {
-            if (program != null)
-            {
-                string details = string.Join("\n", program.Intervals.Select(i => $"{i.TimeRange}: {i.Temperature}°C"));
-                await Application.Current.MainPage.DisplayAlert(program.Name, details, "OK");
-            }
         });
     }
 }

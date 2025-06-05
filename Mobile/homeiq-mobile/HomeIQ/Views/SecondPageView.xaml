@@ -3,46 +3,88 @@
              x:Class="HomeIQ.Views.SecondPageView"
              x:Name="SecondPageRoot"
              xmlns:viewModels="clr-namespace:HomeIQ.ViewModels"
-             BackgroundColor="White"
+             xmlns:converters="clr-namespace:HomeIQ.Converters"
+             BackgroundColor="#e0e0e0"
              Title="Second Page">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Grid>
-        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
+        <!-- Program List -->
+        <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="20">
             <CollectionView ItemsSource="{Binding Programs}" SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical"
-                      ItemSpacing="50"/>
-                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Padding="20" Margin="15,0,15,0" CornerRadius="15" BackgroundColor="#f2f2f2">
-                            <Grid>
-                                <Label Text="{Binding Name}" 
-                                       FontSize="18" 
-                                       TextColor="Black"
-                                       HorizontalOptions="Center"/>
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                    Command="{Binding Source={x:Reference SecondPageRoot}, Path=BindingContext.ShowProgramDetailsCommand}"
-                                    CommandParameter="{Binding .}" />
-                                </Grid.GestureRecognizers>
-                            </Grid>
-                        </Frame>
+                        <Button
+                            Text="{Binding Name}"
+                            TextColor="Black"
+                            Command="{Binding BindingContext.SelectProgramDirectCommand, Source={x:Reference SecondPageRoot}}"
+                            CommandParameter="{Binding .}"
+                            BackgroundColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}}" />
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </VerticalStackLayout>
+
+        <!-- Pop-up Overlay -->
+        <Grid IsVisible="{Binding IsPopupVisible}"
+              BackgroundColor="#80000000"
+              VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand"
+              ZIndex="10">
+            <Frame Padding="20"
+                   BackgroundColor="White"
+                   CornerRadius="15"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="{Binding PopupProgram.Name}" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center"/>
+                    <CollectionView ItemsSource="{Binding PopupProgram.Intervals}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <HorizontalStackLayout>
+                                    <Label Text="{Binding Start, StringFormat='{}{0:hh\\:mm}'}"/>
+                                    <Label Text=" - "/>
+                                    <Label Text="{Binding End, StringFormat='{}{0:hh\\:mm}'}"/>
+                                    <Label Text=": "/>
+                                    <Label Text="{Binding Temperature, StringFormat='{}{0}&#176;C'}"/>
+                                </HorizontalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                        <Button Text="OK" Command="{Binding HidePopupCommand}" />
+                        <Button Text="Select"
+                                Command="{Binding SelectPopupProgramCommand}"
+                                IsEnabled="{Binding PopupProgram.IsActive, Converter={StaticResource InverseBoolConverter}}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+
         <!-- Navigation bar -->
         <HorizontalStackLayout
             Spacing="10"
             Padding="20"
             VerticalOptions="End"
-            HorizontalOptions="Start">
-            <Button Text="Main Page"
-                    Command="{Binding NavigateCommand}"
-                    CommandParameter="MainPageView"/>
-            <Button Text="Second Page"
-                    Command="{Binding NavigateCommand}"
-                    CommandParameter="SecondPageView"/>
+            HorizontalOptions="CenterAndExpand">
+            <Button Text="Home"
+                BackgroundColor="#aaaaaa"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="MainPageView"/>
+            <Button Text="Programs"
+                BackgroundColor="#aaaaaa"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="SecondPageView"/>
+            <Button Text="Logs"
+                BackgroundColor="#aaaaaa"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="LogsView"/>
         </HorizontalStackLayout>
     </Grid>
 </ContentPage>

@@ -121,6 +121,9 @@
 	  <MauiXaml Update="Views\LoginPageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\LogsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\SecondPageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Maui.Controls;
 using System.Diagnostics;
 
+
 namespace HomeIQ.ViewModels
 {
 
@@ -31,7 +32,7 @@ namespace HomeIQ.ViewModels
         }
 
         void OnPropertyChanged([CallerMemberName] string name = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));      
 
         private string _username;
         public string Username
@@ -122,14 +123,11 @@ namespace HomeIQ.ViewModels
             LedState = data?.Camera1?.LedState;
         }
 
-        //public MainPageViewModel(string username)
-        //{
-        //    Username = username;
-        //}
-
         public ICommand SetTemperatureCommand => new Command(async () =>
         {
             await _apiService.SetTemperatureAsync(Temperature);
+       //     await _apiService.AddEventLogAsync("SetTemperature", $"Temperatura setata la {Temperature}°C");
+            MessagingCenter.Send(this, "TemperatureSet");
         });
 
       
@@ -159,11 +157,13 @@ namespace HomeIQ.ViewModels
             {
                 await _apiService.TurnLightOffAsync();
                 LightsOn = false;
+               // await _apiService.AddEventLogAsync("Lightoff", "Lights turned off in camera1");
             }
             else
             {
                 await _apiService.TurnLightOnAsync();
                 LightsOn = true;
+              //  await _apiService.AddEventLogAsync("Lighton", "Lights turned on in camera1");
             }
         });
 
@@ -227,37 +227,59 @@ namespace HomeIQ.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DoorStatusMessage));
                     OnPropertyChanged(nameof(DoorStatusColor));
+                    CanAccessDoor = !_doorIsOpen;
+                    DoorAccessCommand.ChangeCanExecute();
                 }
             }
         }
 
+        private bool _canAccessDoor = true;
+        public bool CanAccessDoor
+        {
+            get => _canAccessDoor;
+            set
+            {
+                if (_canAccessDoor != value)
+                {
+                    _canAccessDoor = value;
+                    OnPropertyChanged();
+                    DoorAccessCommand.ChangeCanExecute();
+                }
+            }
+        }
 
-        
-
-      
+        // Door status message and color
         public string DoorStatusMessage => DoorIsOpen ? "The door is open" : "The door is closed";
         public Color DoorStatusColor => DoorIsOpen ? Colors.Green : Colors.Gray;
 
+        // Door access button text
         public string AccessButtonText => IsInside ? "Do you want to exit?" : "Do you want to enter?";
 
-        public ObservableCollection<string> AccessHistory { get; } = new();
-
-        public ICommand DoorAccessCommand => new Command(async () =>
+        // DoorAccessCommand with CanExecute
+        private Command _doorAccessCommand;
+        public Command DoorAccessCommand => _doorAccessCommand ??= new Command(async () =>
         {
-            if (DoorIsOpen)
-                return;
+            try
+            {
 
-            DoorIsOpen = true;
+                CanAccessDoor = false;
+                    await _apiService.UnlockDoorAsync();
+                DoorIsOpen = true;
+               // await _apiService.AddEventLogAsync("Door Unlocked", "The door has been unlocked remotely.");
+                await Application.Current.MainPage.DisplayAlert("Success", "Door unlocked!", "OK");
 
-            string action = IsInside ? "exited" : "entered";
-            string timestamp = DateTime.Now.ToString("HH:mm:ss");
-            AccessHistory.Insert(0, $"{Username} {action} at {timestamp}");
-
-            await Task.Delay(1000);
-
-            DoorIsOpen = false;
-            IsInside = !IsInside;
-        });
+                // Auto-lock after 10 seconds
+                await Task.Delay(10000);
+                DoorIsOpen = false;
+               // await _apiService.AddEventLogAsync("Door Locked", "The door has been locked automatically.");
+                await Application.Current.MainPage.DisplayAlert("Info", "Door locked automatically.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Failed to unlock door: {ex.Message}", "OK");
+                CanAccessDoor = true;
+            }
+        }, () => CanAccessDoor);
 
         public ICommand NavigateCommand => new Command<string>(async (route) =>
         {
